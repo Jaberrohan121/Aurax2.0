@@ -3,11 +3,11 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { 
   User, Order, WatchProduct, Category, 
   CartItem, OrderStatus, Offer, ChatMessage 
-} from './types';
-import { ADMIN_CREDENTIALS, INITIAL_PRODUCTS, ICONS } from './constants';
-import AuthPage from './components/AuthPage';
-import Storefront from './components/Storefront';
-import AdminPanel from './components/AdminPanel';
+} from './types.ts';
+import { ADMIN_CREDENTIALS, INITIAL_PRODUCTS, ICONS } from './constants.tsx';
+import AuthPage from './components/AuthPage.tsx';
+import Storefront from './components/Storefront.tsx';
+import AdminPanel from './components/AdminPanel.tsx';
 
 const App: React.FC = () => {
   // Global State
@@ -34,8 +34,11 @@ const App: React.FC = () => {
   const [offers, setOffers] = useState<Offer[]>(() => {
     const saved = localStorage.getItem('aurax_offers');
     return saved ? JSON.parse(saved) : [
-      { id: 'off1', title: 'Grand Launch Sale', description: 'Get 20% off on all Luxury items.', imageUrl: 'https://picsum.photos/1200/400?random=1' },
-      { id: 'off2', title: 'Eid Collection', description: 'Special formal watches for special moments.', imageUrl: 'https://picsum.photos/1200/400?random=2' }
+      { id: 'off1', title: 'Grand Launch Sale', description: 'Get 20% off on all Luxury items.', imageUrl: 'https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?auto=format&fit=crop&q=80&w=1200', type: 'offer' },
+      { id: 'off2', title: 'Eid Collection', description: 'Special formal watches for special moments.', imageUrl: 'https://images.unsplash.com/photo-1509114397022-ed747cca3f65?auto=format&fit=crop&q=80&w=1200', type: 'offer' },
+      { id: 'pro1', title: 'Flash 50% Off', description: 'Exclusive discount on Royal Oak series for the next 24 hours.', imageUrl: 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&q=80&w=400', type: 'promo' },
+      { id: 'pro2', title: 'Member Special', description: 'Verified members get free premium delivery on all orders above ৳10,000.', imageUrl: 'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&q=80&w=400', type: 'promo' },
+      { id: 'act1', title: 'Your Free Gift Is Waiting 🎁', description: 'Treasure Chest is live. Play now & win today! 😍', imageUrl: 'https://images.unsplash.com/photo-1600003014755-ba31aa5588f7?auto=format&fit=crop&q=80&w=600', type: 'activity', timestamp: Date.now() }
     ];
   });
 
@@ -83,11 +86,20 @@ const App: React.FC = () => {
       name: userData.name!,
       phone: userData.phone!,
       address: userData.address!,
-      role: 'user'
+      role: 'user',
+      wishlist: [],
+      recentlyViewed: []
     };
     setUsers([...users, newUser]);
     setCurrentUser(newUser);
     return true;
+  };
+
+  const handleUpdateUser = (data: Partial<User>) => {
+    if (!currentUser) return;
+    const updated = { ...currentUser, ...data };
+    setCurrentUser(updated);
+    setUsers(users.map(u => u.id === updated.id ? updated : u));
   };
 
   const logout = () => {
@@ -132,6 +144,7 @@ const App: React.FC = () => {
       setOrders={setOrders}
       setMessages={setMessages}
       onLogout={logout}
+      updateUser={handleUpdateUser}
     />
   );
 };

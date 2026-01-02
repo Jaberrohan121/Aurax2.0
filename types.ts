@@ -1,4 +1,5 @@
 
+
 export enum Category {
   Formal = 'Formal',
   Luxury = 'Luxury',
@@ -9,18 +10,28 @@ export enum Category {
 }
 
 export enum OrderStatus {
-  AwaitingAdminCost = 'AwaitingAdminCost', // Initial state after user places order
-  AwaitingUserApproval = 'AwaitingUserApproval', // Admin sent cost, user must approve
-  AwaitingPayment = 'AwaitingPayment', // User approved cost, waiting for Bkash/Nagad confirmation
-  PaymentConfirmPending = 'PaymentConfirmPending', // User clicked "Payment Confirmed" for Bkash/Nagad
-  ReadyToShip = 'ReadyToShip', // COD approved or Payment verified
-  Shipped = 'Shipped', // Admin clicked ship
-  Delivered = 'Delivered', // User clicked received
+  AwaitingAdminCost = 'AwaitingAdminCost',
+  AwaitingUserApproval = 'AwaitingUserApproval',
+  AwaitingPayment = 'AwaitingPayment',
+  PaymentConfirmPending = 'PaymentConfirmPending',
+  ReadyToShip = 'ReadyToShip',
+  Shipped = 'Shipped',
+  Delivered = 'Delivered',
   Cancelled = 'Cancelled'
 }
 
 export type PaymentMethod = 'Bkash' | 'Nagad' | 'Cash on Delivery';
 export type DeliveryMethod = 'Standard' | 'Premium';
+
+export interface ProductReview {
+  id: string;
+  productId: string;
+  userId: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  timestamp: number;
+}
 
 export interface WatchProduct {
   id: string;
@@ -52,14 +63,12 @@ export interface Order {
   paymentMethod: PaymentMethod;
   deliveryMethod: DeliveryMethod;
   placedAt: number;
-  
-  // Admin fields
   baseTotal?: number;
   vat?: number;
   deliveryCharge?: number;
   grandTotal?: number;
   adminNote?: string;
-  paymentProof?: boolean; // If user clicked "Payment Confirmed"
+  paymentProof?: boolean;
 }
 
 export interface User {
@@ -70,6 +79,8 @@ export interface User {
   phone: string;
   address: string;
   role: 'user' | 'admin';
+  recentlyViewed?: string[];
+  wishlist?: string[];
 }
 
 export interface Offer {
@@ -77,6 +88,8 @@ export interface Offer {
   title: string;
   imageUrl: string;
   description: string;
+  type?: 'offer' | 'promo' | 'activity';
+  timestamp?: number;
 }
 
 export interface ChatMessage {
